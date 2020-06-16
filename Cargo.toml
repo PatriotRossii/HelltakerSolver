@@ -1,7 +1,7 @@
 [package]
-name = "graphcreator"
+name = "helltaker_solver"
 version = "0.1.0"
-authors = ["Danil <patriotrosii2019@mail.ru>"]
+authors = ["Eoan <patriotrosii2019@mail.ru>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
