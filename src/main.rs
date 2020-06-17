@@ -11,6 +11,6 @@ fn main() {
 			];
 
 	let parser = map_parser::Parser::new();
-	println!("{}", parser.parse(map));
+	println!("{:?}", parser.parse(&map));
 }
 

@@ -1,5 +1,4 @@
 use petgraph::Graph;
-use petgraph::dot::{Dot, Config};
 use std::collections::HashMap;
 
 use crate::map;
@@ -13,7 +12,7 @@ struct Node<'a> {
 pub struct Parser { }
 impl Parser {
 	pub fn new() -> Parser { Parser{} }
-	pub fn parse(&self, map: Vec<Vec<map::Cell>>) -> String {
+	pub fn parse<'a>(&self, map: &'a Vec<Vec<map::Cell>>) -> Graph<&'a map::Cell,i32,petgraph::Undirected> {
 		let mut graph = Graph::<&map::Cell, i32, petgraph::Undirected>::new_undirected();
 		let mut nodes = HashMap::new();	
 
@@ -60,6 +59,6 @@ impl Parser {
 				}
 			}
 		}
-		format!("{:?}", Dot::with_config(&graph, &[Config::EdgeNoLabel]))
+		graph
 	}
 }
