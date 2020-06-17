@@ -14,14 +14,15 @@ impl Parser {
 	pub fn new() -> Parser { Parser{} }
 	pub fn parse<'a>(&self, map: &'a Vec<Vec<map::Cell>>) -> Graph<&'a map::Cell,i32,petgraph::Undirected> {
 		let mut graph = Graph::<&map::Cell, i32, petgraph::Undirected>::new_undirected();
-		let mut nodes = HashMap::new();	
+		let mut nodes = HashMap::new();
+		let walkable = map::Map::walkable();
 
 		let rows = map.len();
 		let columns = map[0].len();
 
 		for row in 0..rows {
 			for cell in 0..columns {
-				if let map::Cell::SPACE = &map[row][cell] {
+				if walkable.contains(&map[row][cell]) {
 					let node = Node{position: (row, cell), r#type: &map[row][cell]};
 					nodes.insert(node, graph.add_node(&map[row][cell])); 
 				}
@@ -35,25 +36,25 @@ impl Parser {
 			let (row, column) = cell.position;
 
 			if row != 0 {
-				if let map::Cell::SPACE = map[row - 1][column] {
+				if walkable.contains(&map[row - 1][column]) {
 					let node_edge_with = nodes.iter().find(|&node| node.0.position == (row - 1, column));
 					graph.update_edge(nodes[cell], nodes[node_edge_with.unwrap().0], 1);
 				}
 			}
 			if column != 0 { 
-				if let map::Cell::SPACE = map[row][column - 1] {
+				if walkable.contains(&map[row][column - 1]) {
 					let node_edge_with = nodes.iter().find(|&node| node.0.position == (row, column - 1));
 					graph.update_edge(nodes[cell], nodes[node_edge_with.unwrap().0], 1); 
 				}
 			}
 			if row < rows {
-				if let map::Cell::SPACE = map[row + 1][column] {
+				if walkable.contains(&map[row + 1][column]) {
 					let node_edge_with = nodes.iter().find(|&node| node.0.position == (row + 1, column));
 					graph.update_edge(nodes[cell], nodes[node_edge_with.unwrap().0], 1); 
 				}
 			}
 			if column < columns {
-				if let map::Cell::SPACE = map[row][column + 1] {
+				if walkable.contains(&map[row][column + 1]) {
 					let node_edge_with = nodes.iter().find(|&node| node.0.position == (row, column + 1));
 					graph.update_edge(nodes[cell], nodes[node_edge_with.unwrap().0], 1);
 				}
