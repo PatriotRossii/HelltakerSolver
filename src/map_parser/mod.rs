@@ -12,11 +12,12 @@ struct Node<'a> {
 pub struct Parser { }
 impl Parser {
 	pub fn new() -> Parser { Parser{} }
-	pub fn parse<'a>(&self, map: &'a Vec<Vec<map::Cell>>) -> Graph<&'a map::Cell,i32,petgraph::Undirected> {
+	pub fn parse<'a>(&self, map: &'a map::Map) -> Graph<&'a map::Cell,i32,petgraph::Undirected> {
 		let mut graph = Graph::<&map::Cell, i32, petgraph::Undirected>::new_undirected();
 		let mut nodes = HashMap::new();
 		let walkable = map::Map::walkable();
 
+		let map = map.data();
 		let rows = map.len();
 		let columns = map[0].len();
 
