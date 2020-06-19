@@ -3,12 +3,6 @@ use std::collections::HashMap;
 
 use crate::map;
 
-#[derive(PartialEq, Eq, Hash)]
-struct Node<'a> {
-	position: (usize, usize),
-	r#type: &'a map::Cell,
-}
-
 fn graph_eq<N, E, Ty, Ix>(
     a: &petgraph::Graph<N, E, Ty, Ix>,
     b: &petgraph::Graph<N, E, Ty, Ix>,
@@ -38,46 +32,37 @@ impl Parser {
 		let walkable = map::Map::walkable();
 
 		let map = map.data();
-		let rows = map.len();
-		let columns = map[0].len();
+		let rows = map.len() - 1;
+		let columns = map[0].len() - 1;
 
-		for row in 0..rows {
-			for cell in 0..columns {
+		for row in 0..(rows + 1) {
+			for cell in 0..(columns + 1) {
 				if walkable.contains(&map[row][cell]) {
-					let node = Node{position: (row, cell), r#type: &map[row][cell]};
-					nodes.insert(node, graph.add_node(&map[row][cell])); 
+					nodes.insert((row, cell), graph.add_node(&map[row][cell]));
 				}
 			}
-		}	
+		}
 
-		let rows = rows - 1;
-		let columns = columns - 1;
+		for (key, val) in nodes.iter() {
+			if key.0 != 0 {
+				if walkable.contains(&map[key.0 - 1][key.1]) {
+					graph.update_edge(*val, nodes[&(key.0 - 1, key.1)], 1);
+				}
+			}
+			if key.1 != 0 { 
+				if walkable.contains(&map[key.0][key.1 - 1]) {
+					graph.update_edge(*val, nodes[&(key.0, key.1 - 1)], 1);
+				}
+			}
+			if key.0 < rows {
+				if walkable.contains(&map[key.0 + 1][key.1]) {
+					graph.update_edge(*val, nodes[&(key.0 + 1, key.1)], 1);
+				}
+			}
+			if key.1 < columns {
+				if walkable.contains(&map[key.0][key.1 + 1]) {
+					graph.update_edge(*val, nodes[&(key.0, key.1 + 1)], 1);
 
-		for cell in nodes.keys() {
-			let (row, column) = cell.position;
-
-			if row != 0 {
-				if walkable.contains(&map[row - 1][column]) {
-					let node_edge_with = nodes.iter().find(|&node| node.0.position == (row - 1, column));
-					graph.update_edge(nodes[cell], nodes[node_edge_with.unwrap().0], 1);
-				}
-			}
-			if column != 0 { 
-				if walkable.contains(&map[row][column - 1]) {
-					let node_edge_with = nodes.iter().find(|&node| node.0.position == (row, column - 1));
-					graph.update_edge(nodes[cell], nodes[node_edge_with.unwrap().0], 1); 
-				}
-			}
-			if row < rows {
-				if walkable.contains(&map[row + 1][column]) {
-					let node_edge_with = nodes.iter().find(|&node| node.0.position == (row + 1, column));
-					graph.update_edge(nodes[cell], nodes[node_edge_with.unwrap().0], 1); 
-				}
-			}
-			if column < columns {
-				if walkable.contains(&map[row][column + 1]) {
-					let node_edge_with = nodes.iter().find(|&node| node.0.position == (row, column + 1));
-					graph.update_edge(nodes[cell], nodes[node_edge_with.unwrap().0], 1);
 				}
 			}
 		}
