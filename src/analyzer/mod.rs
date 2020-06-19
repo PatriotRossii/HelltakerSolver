@@ -13,3 +13,18 @@ impl Analyzer {
 		return path;
 	}
 }
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_finding_optimal_way() {
+    	use crate::{map, map_parser, analyzer};
+    	use petgraph::graph::NodeIndex;
+
+        let map = map::Map::from_file("test/maps/example_map");
+        let analyzer = analyzer::Analyzer::new();
+        let parser = map_parser::Parser::new();
+        
+        assert_eq!(analyzer.analyze(&parser.parse(&map)), Some((3, vec![NodeIndex::new(0), NodeIndex::new(2), NodeIndex::new(1), NodeIndex::new(3)])));
+    }
+}

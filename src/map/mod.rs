@@ -12,6 +12,7 @@ pub enum Cell {
 	START,
 }
 
+#[derive(PartialEq, Debug)]
 pub struct Map{ data: Vec<Vec<Cell>> }
 impl Map {
 	pub fn walkable() -> Vec<Cell> {
@@ -42,4 +43,22 @@ impl Map {
 	pub fn data(&self) -> &Vec<Vec<Cell>> {
 		return &self.data
 	}
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_loading() {
+    	use crate::map::{self, Cell};
+
+    	let vec_map = vec![
+    		vec![Cell::WALL, Cell::START, Cell::WALL],
+    		vec![Cell::SPACE, Cell::SPACE, Cell::WALL],
+    		vec![Cell::FINISH, Cell::WALL, Cell::WALL],
+    	];
+
+        let got = map::Map::from_file("test/maps/example_map");
+        let expected = map::Map::from_vec(&vec_map);
+        assert_eq!(got, expected);
+    }
 }
