@@ -33,12 +33,7 @@ impl Map {
 		let file = BufReader::new(file);
 
 		let encoding = Map::encoding();
-		let mut map = Vec::new();
-		for line in file.lines() {
-			let mut row = Vec::new();
-			line.unwrap().chars().for_each(|x| row.push(encoding[&x]));
-			map.push(row)
-		}
+		let map = file.lines().into_iter().map(|x| x.unwrap().chars().into_iter().map(|y| encoding[&y]).collect()).collect();
 		Map{data: map}
 	}	
 	pub fn from_vec(vec: &Vec<Vec<Cell>>) -> Map {
