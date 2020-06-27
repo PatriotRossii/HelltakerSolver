@@ -29,7 +29,9 @@ impl Parser {
 	pub fn parse<'a>(&self, map: &'a map::Map) -> Graph<&'a map::Cell,i32,petgraph::Undirected> {
 		let mut graph = Graph::<&map::Cell, i32, petgraph::Undirected>::new_undirected();
 		let mut nodes = HashMap::new();
+
 		let walkable = map::Map::walkable();
+		let cost = map::Map::cost();
 
 		let map = map.data();
 		let rows = map.len() - 1;
@@ -46,22 +48,22 @@ impl Parser {
 		for (key, val) in nodes.iter() {
 			if key.0 != 0 {
 				if walkable.contains(&map[key.0 - 1][key.1]) {
-					graph.update_edge(*val, nodes[&(key.0 - 1, key.1)], 1);
+					graph.update_edge(*val, nodes[&(key.0 - 1, key.1)], cost[&map[key.0 - 1][key.1]]);
 				}
 			}
 			if key.1 != 0 { 
 				if walkable.contains(&map[key.0][key.1 - 1]) {
-					graph.update_edge(*val, nodes[&(key.0, key.1 - 1)], 1);
+					graph.update_edge(*val, nodes[&(key.0, key.1 - 1)], cost[&map[key.0][key.1 - 1]]);
 				}
 			}
 			if key.0 < rows {
 				if walkable.contains(&map[key.0 + 1][key.1]) {
-					graph.update_edge(*val, nodes[&(key.0 + 1, key.1)], 1);
+					graph.update_edge(*val, nodes[&(key.0 + 1, key.1)], cost[&map[key.0 + 1][key.1]]);
 				}
 			}
 			if key.1 < columns {
 				if walkable.contains(&map[key.0][key.1 + 1]) {
-					graph.update_edge(*val, nodes[&(key.0, key.1 + 1)], 1);
+					graph.update_edge(*val, nodes[&(key.0, key.1 + 1)], cost[&map[key.0][key.1 + 1]]);
 
 				}
 			}
