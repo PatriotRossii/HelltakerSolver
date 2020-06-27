@@ -17,7 +17,7 @@ impl Analyzer {
 #[cfg(test)]
 mod tests {
     #[test]
-    fn test_finding_optimal_way() {
+    fn test_finding_optimal_way_first() {
     	use crate::{map, map_parser, analyzer};
     	use petgraph::graph::NodeIndex;
 
